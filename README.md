@@ -35,11 +35,13 @@ Built using **Vue 3**, **TypeScript**, **Tailwind CSS**, and **Chart.js**.
 
 ---
 
-## 📦 Project Run
+## 📦 Project Install
 
 ```bash
+npm install
 npm run dev
 
+📁 Folder Structure
 src/
 ├── views/            → Home & Detail pages
 ├── components/       → (Optional UI components)
@@ -48,12 +50,13 @@ src/
 ├── App.vue           → Main layout
 ├── main.ts           → App entry point
 
-API Used
+📈 API Used
 GET /coins/markets – List top 100 coins
 
 GET /coins/:id – Detail of selected coin
 
 GET /coins/:id/market_chart – Historical price data for chart
 
-Author
+
+🙋‍♀️ Author
 Created by Manusavee P. (Dew)
