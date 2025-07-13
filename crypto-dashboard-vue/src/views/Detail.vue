@@ -1,61 +1,40 @@
 <template>
-  <div class="p-6" v-if="coin">
-    <h2 class="text-2xl font-bold mb-2">{{ coin.name }}</h2>
-    <div>Market Cap: ${{ coin.market_data.market_cap.usd.toLocaleString() }}</div>
-    <div>Total Volume: ${{ coin.market_data.total_volume.usd.toLocaleString() }}</div>
-    <div class="mt-6">
-      <Line :data="chartData" />
+  <div class="p-4">
+    <button
+      @click="goBack"
+      class="mb-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+    >
+      ← Back
+    </button>
+
+    <div v-if="coinData">
+      <h1 class="text-xl font-bold mb-2">{{ coinData.name }} ({{ coinData.symbol.toUpperCase() }})</h1>
+      <img :src="coinData.image.large" alt="logo" class="w-20 h-20" />
+      <p>Market Cap: ${{ coinData.market_data.market_cap.usd.toLocaleString() }}</p>
+      <p>Total Volume: ${{ coinData.market_data.total_volume.usd.toLocaleString() }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
-import { Line } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement
-} from 'chart.js'
-
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement)
 
 const route = useRoute()
-const coin = ref<any>(null)
-const chartData = ref<any>(null)
+const router = useRouter()
+const coinId = route.params.id as string
+
+const coinData = ref<any>(null)
 
 onMounted(async () => {
-  const id = route.params.id
-  const [coinRes, chartRes] = await Promise.all([
-    axios.get(`https://api.coingecko.com/api/v3/coins/${id}`),
-    axios.get(`https://api.coingecko.com/api/v3/coins/${id}/market_chart`, {
-      params: {
-        vs_currency: 'usd',
-        days: 7
-      }
-    })
-  ])
-
-  coin.value = coinRes.data
-  const prices = chartRes.data.prices.map((p: any) => p[1])
-  const labels = chartRes.data.prices.map((p: any) =>
-    new Date(p[0]).toLocaleDateString()
+  const response = await axios.get(
+    `https://api.coingecko.com/api/v3/coins/${coinId}`
   )
-
-  chartData.value = {
-    labels,
-    datasets: [
-      {
-        label: 'Price (USD)',
-        data: prices,
-        borderColor: 'rgba(75,192,192,1)',
-        tension: 0.4
-      }
-    ]
-  }
+  coinData.value = response.data
 })
+
+function goBack() {
+  router.back()
+}
 </script>
