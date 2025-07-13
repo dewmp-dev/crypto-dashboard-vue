@@ -50,6 +50,7 @@ src/
 ├── App.vue           → Main layout
 ├── main.ts           → App entry point
 
+
 📈 API Used
 GET /coins/markets – List top 100 coins
 
